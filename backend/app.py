@@ -29,8 +29,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 # CORS configuration - Read frontend origin from env, fallback to localhost:3000
-frontend_origin = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000")
-origins = [frontend_origin]
+frontend_origin = os.getenv("FRONTEND_ORIGIN", "https://finance-ai-git-master-jiachens-projects.vercel.app")
+origins = [frontend_origin, "http://localhost:3000"]  # Allow both production and development origins
 
 app.add_middleware(
     CORSMiddleware,
