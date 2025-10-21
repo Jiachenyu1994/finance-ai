@@ -28,10 +28,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-frontend_origin = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000")
+# CORS configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[frontend_origin],
+    allow_origins=["http://localhost:3000", "https://finance-ai-six-delta.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
