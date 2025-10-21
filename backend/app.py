@@ -28,14 +28,16 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-# CORS configuration
+# CORS configuration - Read frontend origin from env, fallback to localhost:3000
+frontend_origin = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000")
+origins = [frontend_origin]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins
-    allow_credentials=False,  # Disable credentials
+    allow_origins=origins,
+    allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
-    expose_headers=["*"]
+    allow_headers=["*"]
 )
 
 
