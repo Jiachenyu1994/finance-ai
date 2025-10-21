@@ -1,0 +1,11 @@
+date,merchant,amount_cents,category
+2025-10-01,Walmart,5999,food
+2025-10-02,Shell,4500,transport
+2025-10-03,Netflix,1499,entertainment
+2025-10-05,Uber,2500,transport
+2025-10-07,Whole Foods,8999,food
+2025-10-10,AMC Theater,3200,entertainment
+2025-10-12,Tim Hortons,750,food
+2025-10-15,Amazon,12999,shopping
+2025-10-17,Subway,1299,food
+2025-10-20,Lyft,1899,transport

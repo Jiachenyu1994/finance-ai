@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+libsql
+python-dotenv
+pandas
+pyjwt
+pydantic
+pytest
+pytest-cov
+httpx
+python-multipart
+email-validator
+requests==2.31.0
