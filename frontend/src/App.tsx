@@ -1,7 +1,8 @@
 import React from "react";
+import axios from "axios";
 import { useNavigate, Route, Routes } from "react-router-dom";
 import Dashboard from "./dashboard";
-import api from './api';
+import { API_BASE_URL } from './config';
 
 // 1. 导入 React，所有 React 组件都需要
 
@@ -32,7 +33,7 @@ function MainPage() {
       return;
     }
     try {
-      const response = await api.post('/api/register_user', {
+      const response = await axios.post(`${API_BASE_URL}/api/register_user`, {
         username,
         email,
         name,
@@ -49,7 +50,7 @@ function MainPage() {
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await api.post('/api/login', {
+      const response = await axios.post(`${API_BASE_URL}/api/login`, {
         identifier,
         password,
       });

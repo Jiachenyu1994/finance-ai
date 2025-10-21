@@ -1,5 +1,6 @@
 import React from "react";
-import api from './api';
+import axios from "axios";
+import { API_BASE_URL } from './config';
 
 export default function Dashboard() {
     const [functionPage, setFunctionPage] = React.useState("main");
@@ -21,7 +22,7 @@ export default function Dashboard() {
                     category,
                 }
         try{
-            const response = await api.post('/api/add_transaction', 
+            const response = await axios.post(`${API_BASE_URL}/api/add_transaction`, 
                 data,
                 {
                     headers: {
@@ -105,8 +106,8 @@ export default function Dashboard() {
                                 formData.append("file", csvFile);
                                 
                                 try {
-                                    const response = await api.post(
-                                        '/api/load_csv',
+                                    const response = await axios.post(
+                                        `${API_BASE_URL}/api/load_csv`,
                                         formData,
                                         {
                                             headers: {
@@ -170,8 +171,8 @@ export default function Dashboard() {
                                     }
                                     const token = localStorage.getItem("authToken");
                                     try {
-                                        const response = await api.post(
-                                            '/api/analyze/query',
+                                        const response = await axios.post(
+                                            `${API_BASE_URL}/api/analyze/query`,
                                             { question },
                                             {
                                                 headers: {
