@@ -46,7 +46,7 @@ jobs:
           FRONTEND_ORIGIN: http://localhost:3000
         run: |
           cd test
-          pytest -v --cov=../backend --cov-report=xml
+          pytest -v --cov=../backend --cov-report=xml --cov-report=html
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v3
