@@ -7,7 +7,6 @@ on:
     paths:
       - 'backend/**'
       - 'frontend/**'
-      - 'test/**'
   pull_request:
     branches:
       - master
