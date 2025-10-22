@@ -31,6 +31,19 @@ jobs:
           pip install -r requirements.txt
       
       - name: Run tests
+        env:
+          LIBSQL_AUTH_TOKEN: eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3NjA5MTUwOTksImlkIjoiOWVlZDVjMWQtNDY2MS00OWQ0LThiMmItYWJjN2FkMDZjNjY3IiwicmlkIjoiZWU4MDM0YzctNDYwMy00OTQ5LWE3YmYtZTg3MGNjYTZjN2I3In0.9_oZ4Q66OLQ6_qU8JVMRUWQ1f_EDGXJF9PRUB1wuUDNfrS3uJLmavPccXOffUx6W-Mhl7396ChBsVI53dMrbCA
+          LIBSQL_URL: libsql://finance-ai-jiachenyu1994.aws-us-east-1.turso.io
+          SECRET: Jiachen_loves_Ru
+          HASH: HS256
+          LOGIN_EXPIRE: 2
+          ENV: prod
+          OPENROUTER_API_KEY: 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
+          OPENROUTER_BASE_URL: https://openrouter.ai/api/v1
+          OPEN_ROUTER_MODEL: qwen/qwen3-235b-a22b:free
+          LLM_TIMEOUT: 20
+          LLM_TEMPERATURE: 0.2
+          FRONTEND_ORIGIN: http://localhost:3000
         run: |
           cd test
           pytest -v --cov=../backend --cov-report=xml
