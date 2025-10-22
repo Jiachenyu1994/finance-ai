@@ -47,8 +47,6 @@ jobs:
         run: |
           cd test
           pytest --cov --cov-branch --cov-report=xml
-          ls -la coverage.xml  # 检查覆盖率报告是否生成
-          cat coverage.xml     # 显示报告内容
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
