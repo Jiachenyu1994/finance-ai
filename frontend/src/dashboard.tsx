@@ -70,6 +70,7 @@ export default function Dashboard() {
     const [csvFile, setCsvFile] = React.useState<File | null>(null);
     const [question, setQuestion] = React.useState("");
     const [analysisResult, setAnalysisResult] = React.useState<any>(null);
+    const [waiting_analysis, setWaitingAnalysis] = React.useState(false);
 
     const handleCategoryChange = (event: SelectChangeEvent) => {
       setCategory(event.target.value);
@@ -347,6 +348,7 @@ export default function Dashboard() {
                       />
                       <Button
                         onClick={async () => {
+                          setWaitingAnalysis(true);
                           if (!question.trim()) {
                             alert("Please enter a question!");
                             return;
@@ -362,6 +364,7 @@ export default function Dashboard() {
                                 }
                               }
                             );
+                            setWaitingAnalysis(false);
                             setAnalysisResult(response.data);
                           } catch (error) {
                             console.error("Error during analysis:", error);
@@ -404,6 +407,9 @@ export default function Dashboard() {
                         <Typography sx={{ whiteSpace: 'pre-line' }}>
                           {analysisResult.summary}
                         </Typography>
+                        {waiting_analysis ? <Typography sx={{ whiteSpace: 'pre-line' }}>
+                          Loading detailed analysis...
+                        </Typography> : null}
                       </CardContent>
                     </Card>
                   </motion.div>
