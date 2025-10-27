@@ -23,7 +23,8 @@ import {
   Fade,
   SelectChangeEvent,
   Stack,
-  CircularProgress
+  CircularProgress,
+  Snackbar
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { 
@@ -33,6 +34,7 @@ import {
   ArrowForward
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
+import { useAutoLogout } from './hooks/useAutoLogout';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -72,6 +74,7 @@ export default function Dashboard() {
     const [question, setQuestion] = React.useState("");
     const [analysisResult, setAnalysisResult] = React.useState<any>(null);
     const [waiting_analysis, setWaitingAnalysis] = React.useState(false);
+    const { showWarning, setShowWarning } = useAutoLogout();
 
     const handleCategoryChange = (event: SelectChangeEvent) => {
       setCategory(event.target.value);
@@ -140,6 +143,7 @@ export default function Dashboard() {
     // Main render
 
     return (
+      <>
       <Box
         sx={{
           minHeight: '100vh',
@@ -454,5 +458,23 @@ export default function Dashboard() {
           </Paper>
         </Container>
       </Box>
+        <Snackbar
+            open={showWarning}
+            message="Your session is about to expire due to inactivity."
+            action={
+            <Button 
+                color="primary" 
+                size="small" 
+                onClick={() => setShowWarning(false)}
+            >
+                Continue
+            </Button>
+            }
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}  // 控制位置
+            autoHideDuration={5000}  // 自动隐藏（可选）
+        />
+      </>  
     );
+    
+    
 }
