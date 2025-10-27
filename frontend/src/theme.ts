@@ -3,35 +3,56 @@ import { createTheme } from '@mui/material/styles';
 export const theme = createTheme({
   palette: {
     primary: {
-      main: '#2196F3',  // 专业的蓝色
-      light: '#64B5F6',
-      dark: '#1976D2',
+      main: '#000000',  // 苹果标志性的黑色
+      light: '#333333',
+      dark: '#000000',
     },
     secondary: {
-      main: '#66BB6A',  // 清新的绿色，适合金融应用
-      light: '#81C784',
-      dark: '#388E3C',
+      main: '#86868b',  // 苹果常用的灰色
+      light: '#f5f5f7',
+      dark: '#1d1d1f',
     },
     background: {
-      default: '#F5F5F5',
-      paper: '#FFFFFF',
+      default: '#ffffff',
+      paper: '#fbfbfd',
+    },
+    text: {
+      primary: '#1d1d1f',
+      secondary: '#86868b',
     },
   },
   typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: '"SF Pro Display", "SF Pro Icons", "Helvetica Neue", "Helvetica", "Arial", sans-serif',
     h1: {
-      fontSize: '2.5rem',
-      fontWeight: 500,
-      marginBottom: '1rem',
+      fontSize: '96px',
+      fontWeight: 700,
+      letterSpacing: '-0.015em',
+      lineHeight: 1.05,
+      marginBottom: '0.5em',
     },
     h2: {
-      fontSize: '2rem',
+      fontSize: '48px',
+      fontWeight: 600,
+      letterSpacing: '-0.009em',
+      lineHeight: 1.1,
+    },
+    h3: {
+      fontSize: '40px',
       fontWeight: 500,
-      marginBottom: '0.875rem',
+      letterSpacing: '0.004em',
+      lineHeight: 1.2,
     },
     body1: {
-      fontSize: '1rem',
-      lineHeight: 1.5,
+      fontSize: '17px',
+      lineHeight: 1.47059,
+      fontWeight: 400,
+      letterSpacing: '-0.022em',
+    },
+    body2: {
+      fontSize: '14px',
+      lineHeight: 1.42859,
+      fontWeight: 400,
+      letterSpacing: '-0.016em',
     },
   },
   components: {
@@ -39,13 +60,27 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           textTransform: 'none',
-          borderRadius: 8,
-          padding: '8px 24px',
+          borderRadius: 980,  // 苹果风格的大圆角
+          padding: '12px 28px',
+          fontSize: '17px',
+          fontWeight: 400,
+          letterSpacing: '-0.022em',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         },
         contained: {
           boxShadow: 'none',
+          backgroundColor: '#000',
+          color: '#fff',
           '&:hover': {
-            boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
+            backgroundColor: '#333',
+            transform: 'scale(1.02)',
+          },
+        },
+        outlined: {
+          borderColor: '#86868b',
+          '&:hover': {
+            borderColor: '#000',
+            backgroundColor: 'rgba(0, 0, 0, 0.04)',
           },
         },
       },
@@ -53,8 +88,14 @@ export const theme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: 12,
-          boxShadow: '0px 4px 12px rgba(0,0,0,0.05)',
+          borderRadius: 20,
+          boxShadow: '0 4px 24px rgba(0, 0, 0, 0.04)',
+          backdropFilter: 'blur(20px)',
+          backgroundColor: 'rgba(251, 251, 253, 0.8)',
+          transition: 'transform 0.3s ease-in-out',
+          '&:hover': {
+            transform: 'scale(1.02)',
+          },
         },
       },
     },
@@ -62,8 +103,34 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           '& .MuiOutlinedInput-root': {
-            borderRadius: 8,
+            borderRadius: 12,
+            backgroundColor: 'rgba(251, 251, 253, 0.8)',
+            backdropFilter: 'blur(20px)',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              backgroundColor: 'rgba(251, 251, 253, 0.9)',
+            },
+            '&.Mui-focused': {
+              backgroundColor: '#fff',
+              boxShadow: '0 0 0 4px rgba(0, 0, 0, 0.1)',
+            },
           },
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundImage: 'none',
+          backgroundColor: 'rgba(251, 251, 253, 0.8)',
+          backdropFilter: 'blur(20px)',
+          transition: 'all 0.3s ease',
+        },
+        elevation1: {
+          boxShadow: '0 4px 24px rgba(0, 0, 0, 0.04)',
+        },
+        elevation3: {
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
         },
       },
     },

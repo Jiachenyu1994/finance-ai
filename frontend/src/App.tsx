@@ -12,7 +12,9 @@ import {
   IconButton,
   InputAdornment,
   Alert,
-  Snackbar
+  Snackbar,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { motion } from 'framer-motion';
@@ -23,7 +25,7 @@ import { theme } from './theme';
 // 1. 导入 React，所有 React 组件都需要
 
 function MainPage() {
-  const [showRegister, setShowRegister] = React.useState(true);
+  const [showRegister, setShowRegister] = React.useState(false);
   const [showLogin, setShowLogin] = React.useState(false);
   const [username, setUsername] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -90,24 +92,90 @@ function MainPage() {
     }
   };
   return (
-    <Container maxWidth="sm">
-      <Box 
+    <Box
+      sx={{
+        minHeight: '100vh',
+        background: 'linear-gradient(180deg, #fbfbfd 0%, #fff 100%)',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      {/* 背景装饰 */}
+      <Box
         sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center'
+          position: 'absolute',
+          top: '-50%',
+          left: '-25%',
+          width: '150%',
+          height: '150%',
+          background: 'radial-gradient(circle at center, rgba(251,251,253,0.8) 0%, rgba(251,251,253,0) 70%)',
+          zIndex: 0,
         }}
-      >
-        <motion.div
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
+      />
+      
+      <Container maxWidth="sm">
+        <Box 
+          sx={{
+            minHeight: '100vh',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'relative',
+            zIndex: 1,
+          }}
         >
-          <Typography variant="h3" component="h1" gutterBottom>
-            Finance AI
-          </Typography>
-        </motion.div>
+          <motion.div
+            initial={{ y: -40, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ 
+              type: "spring",
+              stiffness: 100,
+              damping: 20,
+              delay: 0.2
+            }}
+          >
+            <Typography 
+              variant="h2" 
+              component="h1" 
+              gutterBottom
+              sx={{
+                textAlign: 'center',
+                fontWeight: 700,
+                color: '#1d1d1f',
+                fontSize: { xs: '32px', sm: '48px' },
+                marginBottom: '1em',
+                letterSpacing: '-0.015em'
+              }}
+            >
+              Finance AI
+            </Typography>
+          </motion.div>
+          
+          <motion.div
+            initial={{ y: 40, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ 
+              type: "spring",
+              stiffness: 100,
+              damping: 20,
+              delay: 0.4
+            }}
+          >
+            <Typography 
+              variant="h3" 
+              sx={{ 
+                textAlign: 'center',
+                color: '#86868b',
+                fontSize: { xs: '20px', sm: '24px' },
+                fontWeight: 400,
+                marginBottom: '2em',
+                maxWidth: '600px'
+              }}
+            >
+              智能管理您的财务，轻松掌控每一笔支出
+            </Typography>
+          </motion.div>
         
         <Box sx={{ mt: 4, display: 'flex', gap: 2 }}>
           <Button
@@ -327,12 +395,11 @@ function MainPage() {
             {alertMessage}
           </Alert>
         </Snackbar>
+          </Box>
+        </Container>
       </Box>
-    </Container>
-  );
+    );
 }
-
-
 
 function App() {
   return (
