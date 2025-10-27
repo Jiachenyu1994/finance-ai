@@ -56,6 +56,34 @@ export const theme = createTheme({
     },
   },
   components: {
+    MuiCircularProgress: {
+      styleOverrides: {
+        root: {
+          color: '#000',
+          '&.small': {
+            width: 20,
+            height: 20,
+          },
+          animation: 'circular-rotate 1.4s ease-in-out infinite',
+        },
+        circle: {
+          strokeLinecap: 'round',
+        },
+      },
+    },
+    MuiLinearProgress: {
+      styleOverrides: {
+        root: {
+          backgroundColor: 'rgba(0, 0, 0, 0.04)',
+          borderRadius: 8,
+          height: 4,
+        },
+        bar: {
+          borderRadius: 8,
+          backgroundColor: '#000',
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {

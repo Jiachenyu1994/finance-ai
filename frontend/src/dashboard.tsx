@@ -22,7 +22,8 @@ import {
   IconButton,
   Fade,
   SelectChangeEvent,
-  Stack
+  Stack,
+  CircularProgress
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { 
@@ -419,9 +420,37 @@ export default function Dashboard() {
                 )}
               </Box>
             </TabPanel>
-            {waiting_analysis ? <Typography sx={{ whiteSpace: 'pre-line' }}>
-                          Loading detailed analysis...
-                        </Typography> : null}
+            {waiting_analysis ? (
+                <Box sx={{ 
+                    display: 'flex', 
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    p: 4
+                }}>
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.6 }}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '16px'
+                        }}
+                    >
+                        <CircularProgress size={24} />
+                        <Typography 
+                            sx={{ 
+                                color: 'text.secondary',
+                                fontSize: '1rem'
+                            }}
+                        >
+                            Loading detailed analysis...
+                        </Typography>
+                    </motion.div>
+                </Box>
+            ) : null}
+
+                
           </Paper>
         </Container>
       </Box>
