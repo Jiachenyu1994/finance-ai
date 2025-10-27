@@ -27,7 +27,7 @@ export function useAutoLogout() {
             }, AUTO_LOGOUT_TIME - WARNING_BEFORE_TIMEOUT);
             
             logoutTimeout = setTimeout(() => {
-                handleLogout;
+                handleLogout();
             }, AUTO_LOGOUT_TIME);
         };
 
