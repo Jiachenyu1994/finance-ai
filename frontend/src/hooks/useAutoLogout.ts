@@ -15,7 +15,7 @@ export function useAutoLogout() {
         const handleLogout = () => {
             // 清理本地存储或任何认证信息
             localStorage.clear();
-            navigate("/login");
+            navigate("/");
         };
 
         const resetTimers = () => {
