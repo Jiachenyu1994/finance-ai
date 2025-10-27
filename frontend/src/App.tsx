@@ -1,13 +1,28 @@
 import React from "react";
 import axios from "axios";
 import { useNavigate, Route, Routes } from "react-router-dom";
+import { ThemeProvider } from '@mui/material/styles';
+import { 
+  Container, 
+  Box, 
+  Typography, 
+  TextField, 
+  Button, 
+  Paper,
+  IconButton,
+  InputAdornment,
+  Alert,
+  Snackbar
+} from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { motion } from 'framer-motion';
 import Dashboard from "./dashboard";
 import { API_BASE_URL } from './config';
+import { theme } from './theme';
 
 // 1. 导入 React，所有 React 组件都需要
 
 function MainPage() {
-  // 2. 定义主组件 App
   const [showRegister, setShowRegister] = React.useState(true);
   const [showLogin, setShowLogin] = React.useState(false);
   const [username, setUsername] = React.useState("");
@@ -17,7 +32,16 @@ function MainPage() {
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
   const [identifier, setIdentifier] = React.useState("");
+  const [alertOpen, setAlertOpen] = React.useState(false);
+  const [alertMessage, setAlertMessage] = React.useState("");
+  const [alertSeverity, setAlertSeverity] = React.useState<'success' | 'error'>('success');
   const navigate = useNavigate();
+  const handleAlert = (message: string, severity: 'success' | 'error') => {
+    setAlertMessage(message);
+    setAlertSeverity(severity);
+    setAlertOpen(true);
+  };
+
   const handleRegisterClick = () => {
     setShowLogin(false);
     setShowRegister(!showRegister);
@@ -25,11 +49,11 @@ function MainPage() {
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      handleAlert("Passwords do not match!", "error");
       return;
     }
     if (password.length < 8) {
-      alert("Password must be at least 8 characters long!");
+      handleAlert("Password must be at least 8 characters long!", "error");
       return;
     }
     try {
@@ -39,12 +63,12 @@ function MainPage() {
         name,
         password,
       });
-      console.log("注册成功:", response.data);
-      alert("Registration successful!");
-      
+      handleAlert("Registration successful!", "success");
+      setShowRegister(false);
+      setShowLogin(true);
     } catch (error) {
       console.error("注册失败:", error);
-      alert("Registration failed. Please try again.");
+      handleAlert("Registration failed. Please try again.", "error");
     }
   };
   const handleLoginSubmit = async (e: React.FormEvent) => {
@@ -54,131 +78,257 @@ function MainPage() {
         identifier,
         password,
       });
-      console.log("登录成功:", response.data);
-      alert("Login successful!");
+      handleAlert("Login successful!", "success");
       const token = response.data.token;
       localStorage.setItem("authToken", token);
-      navigate('/dashboard');
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1000); // 延迟1秒跳转，让用户看到成功提示
     } catch (error) {
       console.error("登录失败:", error);
-      alert("Login failed. Please try again.");
+      handleAlert("Login failed. Please try again.", "error");
     }
   };
   return (
-    <div style={{ textAlign: "center", marginTop: "100px" }}>
-      <h1>欢迎使用 Finance AI</h1>
-      <div style={{ marginTop: "40px" }}>
-        <button style={{ marginRight: "20px", padding: "10px 30px" }} onClick={handleRegisterClick}>
-          Register
-        </button>
-        <button style={{ padding: "10px 30px" }} onClick={()=>{setShowLogin(!showLogin); setShowRegister(false)}}>
-          Login
-        </button>
-        {showLogin && <div><form onSubmit={handleLoginSubmit} style={{ display: "inline-block", textAlign: "left" ,border: "1px solid #ccc", padding: "20px", borderRadius: "5px"}}>
-          <div>
-            <label>Username or Email: </label>
-            <input
-              type="text"
-              value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
-              placeholder="Please enter your username or email"
-              required
-            />
-          </div>
-          <div>
-            <label>Password: </label>
-            <input
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="**************"
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}>
-              {showPassword ? "Hide" : "Show"}
-            </button>
-          </div>
-          <div style={{ textAlign: "center", marginTop: "10px" }}>
-            <button type="submit">Login</button>
-            <button type="button" style={{ marginLeft: "10px" }} onClick={() => setShowLogin(!showLogin)}>Close</button>
-          </div>
-        </form></div>}
+    <Container maxWidth="sm">
+      <Box 
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center'
+        }}
+      >
+        <motion.div
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Typography variant="h3" component="h1" gutterBottom>
+            Finance AI
+          </Typography>
+        </motion.div>
+        
+        <Box sx={{ mt: 4, display: 'flex', gap: 2 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleRegisterClick}
+            sx={{ minWidth: 120 }}
+          >
+            Register
+          </Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => {setShowLogin(!showLogin); setShowRegister(false)}}
+            sx={{ minWidth: 120 }}
+          >
+            Login
+          </Button>
+        </Box>
+        {showLogin && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Paper 
+              elevation={3}
+              sx={{ 
+                mt: 4, 
+                p: 4, 
+                width: '100%',
+                maxWidth: 400
+              }}
+            >
+              <Typography variant="h5" component="h2" gutterBottom>
+                Login
+              </Typography>
+              <Box 
+                component="form" 
+                onSubmit={handleLoginSubmit}
+                sx={{ mt: 2 }}
+              >
+                <TextField
+                  fullWidth
+                  label="Username or Email"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
+                  margin="normal"
+                  required
+                />
+                <TextField
+                  fullWidth
+                  label="Password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  margin="normal"
+                  required
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowPassword(!showPassword)}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                  >
+                    Login
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    onClick={() => setShowLogin(false)}
+                    fullWidth
+                  >
+                    Cancel
+                  </Button>
+                </Box>
+              </Box>
+            </Paper>
+          </motion.div>
+        )}
 
 
 
-        {showRegister && 
-        <div style={{ marginTop: "20px" }}>
-          <form onSubmit={handleRegisterSubmit} style={{ display: "inline-block", textAlign: "left" ,border: "1px solid #ccc", padding: "20px", borderRadius: "5px"}}>
-            <div>
-              <label>Username: </label>
-              <input 
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Please enter your username"
-              required
-              />
-            </div>
-            <div>
-              <label>Email: </label>
-              <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Please enter your email"
-              required
-              />
-            </div>
-            <div>
-              <label>Name: </label>
-              <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Please enter your name"
-              required
-              />
-            </div>
-            <div>
-              <label>Password: </label>
-              <input
-              type={showPassword ? "text" : "password"}
-              value={password}
-              placeholder="**************"
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              />
-              <button
-              type="button" 
-              onClick={() => setShowPassword(!showPassword)}>
-                {showPassword ? "Hide" : "Show"}
-              </button>
-            </div>
-            <div>
-              <label>Confirm Password: </label>
-              <input
-              type={showPassword ? "text" : "password"}
-              value={confirmPassword}
-              placeholder="**************"
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              />
-              <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}>
-                {showPassword ? "Hide" : "Show"}
-              </button>
-            </div>
-            <div style={{ textAlign: "center", marginTop: "10px" }}>
-            <button type="submit">Register</button>
-            <button type="button" style={{ marginLeft: "10px" }} onClick={handleRegisterClick}>Close</button>
-            </div>
-          </form>
-        </div>}
-      </div>
-    </div>
+        {showRegister && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Paper 
+              elevation={3}
+              sx={{ 
+                mt: 4, 
+                p: 4,
+                width: '100%',
+                maxWidth: 400
+              }}
+            >
+              <Typography variant="h5" component="h2" gutterBottom>
+                Register
+              </Typography>
+              <Box 
+                component="form" 
+                onSubmit={handleRegisterSubmit}
+                sx={{ mt: 2 }}
+              >
+                <TextField
+                  fullWidth
+                  label="Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  margin="normal"
+                  required
+                />
+                <TextField
+                  fullWidth
+                  label="Email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  margin="normal"
+                  required
+                />
+                <TextField
+                  fullWidth
+                  label="Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  margin="normal"
+                  required
+                />
+                <TextField
+                  fullWidth
+                  label="Password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  margin="normal"
+                  required
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowPassword(!showPassword)}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <TextField
+                  fullWidth
+                  label="Confirm Password"
+                  type={showPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  margin="normal"
+                  required
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowPassword(!showPassword)}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                  >
+                    Register
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    onClick={handleRegisterClick}
+                    fullWidth
+                  >
+                    Cancel
+                  </Button>
+                </Box>
+              </Box>
+            </Paper>
+          </motion.div>
+        )}
+        <Snackbar 
+          open={alertOpen} 
+          autoHideDuration={6000} 
+          onClose={() => setAlertOpen(false)}
+        >
+          <Alert 
+            onClose={() => setAlertOpen(false)} 
+            severity={alertSeverity}
+            sx={{ width: '100%' }}
+          >
+            {alertMessage}
+          </Alert>
+        </Snackbar>
+      </Box>
+    </Container>
   );
 }
 
@@ -186,10 +336,12 @@ function MainPage() {
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<MainPage />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-    </Routes>
+    <ThemeProvider theme={theme}>
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </ThemeProvider>
   );
 }
 
