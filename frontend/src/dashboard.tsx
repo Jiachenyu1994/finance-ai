@@ -413,15 +413,15 @@ export default function Dashboard() {
                         <Typography sx={{ whiteSpace: 'pre-line' }}>
                           {analysisResult.summary}
                         </Typography>
-                        {waiting_analysis ? <Typography sx={{ whiteSpace: 'pre-line' }}>
-                          Loading detailed analysis...
-                        </Typography> : null}
                       </CardContent>
                     </Card>
                   </motion.div>
                 )}
               </Box>
             </TabPanel>
+            {waiting_analysis ? <Typography sx={{ whiteSpace: 'pre-line' }}>
+                          Loading detailed analysis...
+                        </Typography> : null}
           </Paper>
         </Container>
       </Box>
