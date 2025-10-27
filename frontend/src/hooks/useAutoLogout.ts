@@ -1,8 +1,8 @@
 import { use, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const AUTO_LOGOUT_TIME = 2 * 60 * 1000; // 15分钟
-const WARNING_BEFORE_TIMEOUT = 1 * 60 * 1000; // 14分钟
+const AUTO_LOGOUT_TIME = 15 * 60 * 1000; // 15分钟
+const WARNING_BEFORE_TIMEOUT = 14 * 60 * 1000; // 14分钟
 
 export function useAutoLogout() {
     const navigate = useNavigate();

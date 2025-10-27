@@ -244,7 +244,6 @@ export default function Dashboard() {
                     value={(amountCents / 100).toFixed(2)}
                     onChange={(e) => setAmountCents(Math.round(parseFloat(e.target.value) * 100))}
                     required
-                    inputProps={{ step: "0.01" }}
                   />
                   <FormControl fullWidth required>
                     <InputLabel>Category</InputLabel>
@@ -470,7 +469,7 @@ export default function Dashboard() {
                 Continue
             </Button>
             }
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}  // 控制位置
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}  // 控制位置
             autoHideDuration={5000}  // 自动隐藏（可选）
         />
       </>  
