@@ -109,6 +109,35 @@ export default function Dashboard() {
         }
     }
 
+    async function handleAnalyzeQuestion() {
+        setWaitingAnalysis(true);
+        if (!question.trim()) {
+        alert("Please enter a question!");
+        return;
+        }
+        const token = localStorage.getItem("authToken");
+        try {
+        const response = await axios.post(
+            `${API_BASE_URL}/api/analyze/query`,
+            { question },
+            {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+            }
+        );
+        setWaitingAnalysis(false);
+        setAnalysisResult(response.data);
+        } catch (error) {
+        console.error("Error during analysis:", error);
+        alert("Failed to analyze. Please try again.");
+        }
+    }
+
+
+
+    // Main render
+
     return (
       <Box
         sx={{
@@ -347,30 +376,7 @@ export default function Dashboard() {
                         }}
                       />
                       <Button
-                        onClick={async () => {
-                          setWaitingAnalysis(true);
-                          if (!question.trim()) {
-                            alert("Please enter a question!");
-                            return;
-                          }
-                          const token = localStorage.getItem("authToken");
-                          try {
-                            const response = await axios.post(
-                              `${API_BASE_URL}/api/analyze/query`,
-                              { question },
-                              {
-                                headers: {
-                                  Authorization: `Bearer ${token}`
-                                }
-                              }
-                            );
-                            setWaitingAnalysis(false);
-                            setAnalysisResult(response.data);
-                          } catch (error) {
-                            console.error("Error during analysis:", error);
-                            alert("Failed to analyze. Please try again.");
-                          }
-                        }}
+                        onClick={handleAnalyzeQuestion}
                         variant="contained"
                         sx={{ 
                           height: 48,
