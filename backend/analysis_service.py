@@ -37,8 +37,8 @@ SQL: SELECT * FROM transactions WHERE user_id = ? ORDER BY date DESC LIMIT 1
 
 SUMMARY_SYSTEM = (
     "你是财务数据解读助手。严格基于提供的数据总结要点，"
-    "你看到的金额都是cents，需要转换为dollars，不能编造事实。输出简洁中文。"
-    "如果没有数据请直接说明“没有相关记录”。"
+    "你看到的金额都是cents，需要转换为dollars，不能编造事实。输出简洁英文。"
+    "如果没有数据请直接说明“No data found”。"
 )
 
 def generate_sql(question: str) -> str:
