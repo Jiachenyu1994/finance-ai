@@ -24,7 +24,8 @@ import {
   SelectChangeEvent,
   Stack,
   CircularProgress,
-  Snackbar
+  Snackbar,
+  Autocomplete
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { 
@@ -241,22 +242,28 @@ export default function Dashboard() {
                     fullWidth
                     type="number"
                     label="Amount (dollars)"
-                    value={(amountCents / 100).toFixed(2)}
+                    value={(amountCents / 100)}
                     onChange={(e) => setAmountCents(Math.round(parseFloat(e.target.value) * 100))}
                     required
+                    inputProps={{
+                      step: "0.01",
+                    }}
                   />
-                  <FormControl fullWidth required>
-                    <InputLabel>Category</InputLabel>
-                    <Select
-                      value={category}
-                      onChange={handleCategoryChange}
-                      label="Category"
-                    >
-                      <MenuItem value="food">Food</MenuItem>
-                      <MenuItem value="transport">Transport</MenuItem>
-                      <MenuItem value="entertainment">Entertainment</MenuItem>
-                    </Select>
-                  </FormControl>
+                  <Autocomplete
+                    fullWidth
+                    freeSolo
+                    value={category}
+                    onChange={(_, newValue) => setCategory(newValue || "")}
+                    onInputChange={(_, newValue) => setCategory(newValue)}
+                    options={["food", "transport", "entertainment"]}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Category"
+                        required
+                      />
+                    )}
+                  />
                   <Button
                     type="submit"
                     variant="contained"
