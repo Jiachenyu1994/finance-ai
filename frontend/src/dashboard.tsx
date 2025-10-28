@@ -576,7 +576,7 @@ export default function Dashboard() {
                 >
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
-                      类别明细
+                      Detail:
                     </Typography>
                     <Box display="grid" sx={{ gap: 2, gridTemplateColumns: { sm: '1fr 1fr', xs: '1fr' } }}>
                       {categoryStats.map((category, index) => (
@@ -586,20 +586,20 @@ export default function Dashboard() {
                               {category.name}
                             </Typography>
                             <Typography variant="body2" color="text.secondary" gutterBottom>
-                              占比: {category.percentage.toFixed(1)}%
+                              Weight: {category.percentage.toFixed(1)}%
                             </Typography>
                             <Box sx={{ mt: 1 }}>
                               <Typography variant="body2">
-                                总支出: ${(category.value/100).toFixed(2)}
+                                Total: ${(category.value/100).toFixed(2)}
                               </Typography>
                               <Typography variant="body2">
-                                交易次数: {category.transactionCount}
+                                Transactions: {category.transactionCount}
                               </Typography>
                               <Typography variant="body2">
-                                最大支出: ${(category.maxAmount/100).toFixed(2)}
+                                Max spends: ${(category.maxAmount/100).toFixed(2)}
                               </Typography>
                               <Typography variant="body2">
-                                平均支出: ${(category.avgAmount/100).toFixed(2)}
+                                Average spends: ${(category.avgAmount/100).toFixed(2)}
                               </Typography>
                             </Box>
                           </CardContent>
