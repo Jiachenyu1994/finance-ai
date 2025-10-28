@@ -407,6 +407,104 @@ export default function Dashboard() {
 
             <TabPanel value={tabValue} index={2}>
                   <Box sx={{ maxWidth: 800, mx: 'auto' }}>
+                {/* AI分析卡片 */}
+                <Card 
+                  elevation={0}
+                  sx={{ 
+                    mb: 3,
+                    borderRadius: 3,
+                    border: '1px solid',
+                    borderColor: 'divider'
+                  }}>
+                  <CardContent>
+                    <Box sx={{ display: 'flex', gap: 2 }}>
+                      <TextField
+                        fullWidth
+                        value={question}
+                        onChange={(e) => setQuestion(e.target.value)}
+                        placeholder="E.g., What's my total spending in the last month?"
+                        variant="outlined"
+                        sx={{ 
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: 3,
+                            height: 48
+                          }
+                        }}
+                      />
+                      <Button
+                        onClick={handleAnalyzeQuestion}
+                        variant="contained"
+                        sx={{ 
+                          height: 48,
+                          borderRadius: 3,
+                          textTransform: 'none',
+                          fontSize: '1rem',
+                          px: 3
+                        }}
+                      >
+                        Analyze
+                      </Button>
+                    </Box>
+                  </CardContent>
+                </Card>
+
+                {analysisResult && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <Card 
+                      elevation={0}
+                      sx={{ 
+                        mb: 3,
+                        borderRadius: 3,
+                        border: '1px solid',
+                        borderColor: 'divider'
+                      }}
+                    >
+                      <CardContent>
+                        <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                          Analysis Result
+                        </Typography>
+                        <Typography sx={{ whiteSpace: 'pre-line' }}>
+                          {analysisResult.summary}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                )}
+                {waiting_analysis ? (
+                <Box sx={{ 
+                    display: 'flex', 
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    p: 4
+                }}>
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.6 }}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '16px'
+                        }}
+                    >
+                        <CircularProgress size={24} />
+                        <Typography 
+                            sx={{ 
+                                color: 'text.secondary',
+                                fontSize: '1rem'
+                            }}
+                        >
+                            Loading detailed analysis...
+                        </Typography>
+                    </motion.div>
+                </Box>
+                ) : null
+                }
+
                 {/* 总支出统计卡片 */}
                 <Card 
                   elevation={0}
@@ -421,13 +519,13 @@ export default function Dashboard() {
                     <Box display="grid" sx={{ gap: 3, gridTemplateColumns: { md: '1fr 1fr', xs: '1fr' } }}>
                       <Box>
                         <Typography variant="h6" gutterBottom>
-                          总支出
+                          Total spending
                         </Typography>
                         <Typography variant="h4" color="primary">
                           ${((categoryStats[0]?.value || 0) / 100).toFixed(2)}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                          共 {categoryStats.length} 个类别, {categoryStats.reduce((acc, curr) => acc + curr.transactionCount, 0)} 笔交易
+                          Total: {categoryStats.length} Categories, {categoryStats.reduce((acc, curr) => acc + curr.transactionCount, 0)} Transactions
                         </Typography>
                       </Box>
                       <Box>
@@ -511,148 +609,11 @@ export default function Dashboard() {
                   </CardContent>
                 </Card>
 
-                {/* AI分析卡片 */}
-                <Card 
-                  elevation={0}
-                  sx={{ 
-                    mb: 3,
-                    borderRadius: 3,
-                    border: '1px solid',
-                    borderColor: 'divider'
-                  }}
-                >
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-                      Spending by Category
-                    </Typography>
-                    <Box sx={{ width: '100%', height: 400 }}>
-                      <ResponsiveContainer>
-                        <PieChart>
-                          <Pie
-                            data={categoryStats}
-                            dataKey="value"
-                            nameKey="name"
-                            cx="50%"
-                            cy="50%"
-                            outerRadius={150}
-                            label
-                          >
-                            {categoryStats.map((entry, index) => (
-                              <Cell 
-                                key={`cell-${index}`} 
-                                fill={[
-                                  '#FF6B6B', '#4ECDC4', '#45B7D1', 
-                                  '#96CEB4', '#FFEEAD', '#D4A5A5'
-                                ][index % 6]} 
-                              />
-                            ))}
-                          </Pie>
-                          <Tooltip 
-                            formatter={(value: number) => `$${(value/100).toFixed(2)}`}
-                          />
-                          <Legend />
-                        </PieChart>
-                      </ResponsiveContainer>
-                    </Box>
-                  </CardContent>
-                </Card>
-                <Card 
-                  elevation={0}
-                  sx={{ 
-                    mb: 3,
-                    borderRadius: 3,
-                    border: '1px solid',
-                    borderColor: 'divider'
-                  }}
-                >
-                  <CardContent>
-                    <Box sx={{ display: 'flex', gap: 2 }}>
-                      <TextField
-                        fullWidth
-                        value={question}
-                        onChange={(e) => setQuestion(e.target.value)}
-                        placeholder="E.g., What's my total spending in the last month?"
-                        variant="outlined"
-                        sx={{ 
-                          '& .MuiOutlinedInput-root': {
-                            borderRadius: 3,
-                            height: 48
-                          }
-                        }}
-                      />
-                      <Button
-                        onClick={handleAnalyzeQuestion}
-                        variant="contained"
-                        sx={{ 
-                          height: 48,
-                          borderRadius: 3,
-                          textTransform: 'none',
-                          fontSize: '1rem',
-                          px: 3
-                        }}
-                      >
-                        Analyze
-                      </Button>
-                    </Box>
-                  </CardContent>
-                </Card>
 
-                {analysisResult && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <Card 
-                      elevation={0}
-                      sx={{ 
-                        borderRadius: 3,
-                        border: '1px solid',
-                        borderColor: 'divider'
-                      }}
-                    >
-                      <CardContent>
-                        <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-                          Analysis Result
-                        </Typography>
-                        <Typography sx={{ whiteSpace: 'pre-line' }}>
-                          {analysisResult.summary}
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                )}
+
               </Box>
             </TabPanel>
-            {waiting_analysis ? (
-                <Box sx={{ 
-                    display: 'flex', 
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    p: 4
-                }}>
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.6 }}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '16px'
-                        }}
-                    >
-                        <CircularProgress size={24} />
-                        <Typography 
-                            sx={{ 
-                                color: 'text.secondary',
-                                fontSize: '1rem'
-                            }}
-                        >
-                            Loading detailed analysis...
-                        </Typography>
-                    </motion.div>
-                </Box>
-            ) : null}
+            
 
                 
           </Paper>
