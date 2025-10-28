@@ -36,6 +36,17 @@ import {
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { useAutoLogout } from './hooks/useAutoLogout';
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+
+interface CategoryStats {
+  name: string;
+  value: number;
+  percentage: number;
+  transactionCount: number;
+  maxAmount: number;
+  avgAmount: number;
+  [key: string]: string | number;
+}
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -75,7 +86,41 @@ export default function Dashboard() {
     const [question, setQuestion] = React.useState("");
     const [analysisResult, setAnalysisResult] = React.useState<any>(null);
     const [waiting_analysis, setWaitingAnalysis] = React.useState(false);
+    const [categoryStats, setCategoryStats] = React.useState<Array<CategoryStats>>([]);
     const { showWarning, setShowWarning } = useAutoLogout();
+
+    const fetchCategoryStats = async () => {
+        const token = localStorage.getItem("authToken");
+        try {
+            console.log("Fetching category stats...");
+            console.log("Token:", token);
+            const response = await axios.get(
+                `${API_BASE_URL}/api/category_stats`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            console.log("Response:", response.data);
+            setCategoryStats(response.data.categories);
+        } catch (error) {
+            console.error("Error fetching category stats:", error);
+            if (axios.isAxiosError(error)) {
+                console.error("Response data:", error.response?.data);
+                console.error("Status code:", error.response?.status);
+                alert(`Failed to fetch category statistics: ${error.response?.data?.detail || error.message}`);
+            } else {
+                alert("Failed to fetch category statistics.");
+            }
+        }
+    };
+
+    React.useEffect(() => {
+        if (tabValue === 2) {
+            fetchCategoryStats();
+        }
+    }, [tabValue]);
 
     const handleCategoryChange = (event: SelectChangeEvent) => {
       setCategory(event.target.value);
@@ -361,7 +406,156 @@ export default function Dashboard() {
             </TabPanel>
 
             <TabPanel value={tabValue} index={2}>
-              <Box sx={{ maxWidth: 800, mx: 'auto' }}>
+                  <Box sx={{ maxWidth: 800, mx: 'auto' }}>
+                {/* 总支出统计卡片 */}
+                <Card 
+                  elevation={0}
+                  sx={{ 
+                    mb: 3,
+                    borderRadius: 3,
+                    border: '1px solid',
+                    borderColor: 'divider'
+                  }}
+                >
+                  <CardContent>
+                    <Box display="grid" sx={{ gap: 3, gridTemplateColumns: { md: '1fr 1fr', xs: '1fr' } }}>
+                      <Box>
+                        <Typography variant="h6" gutterBottom>
+                          总支出
+                        </Typography>
+                        <Typography variant="h4" color="primary">
+                          ${((categoryStats[0]?.value || 0) / 100).toFixed(2)}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          共 {categoryStats.length} 个类别, {categoryStats.reduce((acc, curr) => acc + curr.transactionCount, 0)} 笔交易
+                        </Typography>
+                      </Box>
+                      <Box>
+                        <Box sx={{ height: 200 }}>
+                          <ResponsiveContainer>
+                            <PieChart>
+                              <Pie
+                                data={categoryStats}
+                                dataKey="value"
+                                nameKey="name"
+                                cx="50%"
+                                cy="50%"
+                                innerRadius={40}
+                                outerRadius={80}
+                                paddingAngle={5}
+                              >
+                                {categoryStats.map((entry, index) => (
+                                  <Cell 
+                                    key={`cell-${index}`}
+                                    fill={[
+                                      '#FF6B6B', '#4ECDC4', '#45B7D1', 
+                                      '#96CEB4', '#FFEEAD', '#D4A5A5'
+                                    ][index % 6]}
+                                  />
+                                ))}
+                              </Pie>
+                              <Tooltip 
+                                formatter={(value: number) => `$${(value/100).toFixed(2)}`}
+                              />
+                              <Legend />
+                            </PieChart>
+                          </ResponsiveContainer>
+                        </Box>
+                      </Box>
+                    </Box>
+                  </CardContent>
+                </Card>
+
+                {/* 类别详细信息卡片 */}
+                <Card 
+                  elevation={0}
+                  sx={{ 
+                    mb: 3,
+                    borderRadius: 3,
+                    border: '1px solid',
+                    borderColor: 'divider'
+                  }}
+                >
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      类别明细
+                    </Typography>
+                    <Box display="grid" sx={{ gap: 2, gridTemplateColumns: { sm: '1fr 1fr', xs: '1fr' } }}>
+                      {categoryStats.map((category, index) => (
+                        <Card key={index} variant="outlined" sx={{ bgcolor: 'background.default' }}>
+                          <CardContent>
+                            <Typography variant="h6" color="primary">
+                              {category.name}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" gutterBottom>
+                              占比: {category.percentage.toFixed(1)}%
+                            </Typography>
+                            <Box sx={{ mt: 1 }}>
+                              <Typography variant="body2">
+                                总支出: ${(category.value/100).toFixed(2)}
+                              </Typography>
+                              <Typography variant="body2">
+                                交易次数: {category.transactionCount}
+                              </Typography>
+                              <Typography variant="body2">
+                                最大支出: ${(category.maxAmount/100).toFixed(2)}
+                              </Typography>
+                              <Typography variant="body2">
+                                平均支出: ${(category.avgAmount/100).toFixed(2)}
+                              </Typography>
+                            </Box>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </Box>
+                  </CardContent>
+                </Card>
+
+                {/* AI分析卡片 */}
+                <Card 
+                  elevation={0}
+                  sx={{ 
+                    mb: 3,
+                    borderRadius: 3,
+                    border: '1px solid',
+                    borderColor: 'divider'
+                  }}
+                >
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                      Spending by Category
+                    </Typography>
+                    <Box sx={{ width: '100%', height: 400 }}>
+                      <ResponsiveContainer>
+                        <PieChart>
+                          <Pie
+                            data={categoryStats}
+                            dataKey="value"
+                            nameKey="name"
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={150}
+                            label
+                          >
+                            {categoryStats.map((entry, index) => (
+                              <Cell 
+                                key={`cell-${index}`} 
+                                fill={[
+                                  '#FF6B6B', '#4ECDC4', '#45B7D1', 
+                                  '#96CEB4', '#FFEEAD', '#D4A5A5'
+                                ][index % 6]} 
+                              />
+                            ))}
+                          </Pie>
+                          <Tooltip 
+                            formatter={(value: number) => `$${(value/100).toFixed(2)}`}
+                          />
+                          <Legend />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </Box>
+                  </CardContent>
+                </Card>
                 <Card 
                   elevation={0}
                   sx={{ 

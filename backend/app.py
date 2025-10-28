@@ -195,3 +195,67 @@ def analyze_query(req: AnalyzeReq,user_id: str = Depends(get_current_user)):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ve))
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+
+@app.get("/api/category_stats")
+async def get_category_stats(user_id: str = Depends(get_current_user)):
+    print(f"Fetching category stats for user: {user_id}")
+    conn = None
+    try:
+        conn = db.get_conn()
+        print("Database connection established")
+        
+        # 查询每个类别的总支出和交易次数
+        query = """
+            SELECT 
+                category,
+                SUM(amount_cents) as total_amount,
+                COUNT(*) as transaction_count,
+                MAX(amount_cents) as max_amount,
+                AVG(CAST(amount_cents AS FLOAT)) as avg_amount
+            FROM transactions 
+            WHERE user_id = ? AND category IS NOT NULL
+            GROUP BY category
+            ORDER BY total_amount DESC
+        """
+        print(f"Executing query for user_id: {user_id}")
+        cur = conn.execute(query, (user_id,))
+        
+        categories = []
+        rows = cur.fetchall()
+        print(f"Found {len(rows)} categories")
+        
+        # 计算总支出
+        total_spending = sum(row[1] for row in rows)
+        
+        for row in rows:
+            category_name = row[0]
+            amount = row[1]
+            categories.append({
+                "name": category_name,
+                "value": amount,
+                "percentage": round((amount / total_spending) * 100, 2) if total_spending > 0 else 0,
+                "transactionCount": row[2],
+                "maxAmount": row[3],
+                "avgAmount": round(row[4])
+            })
+        
+        result = {
+            "categories": categories,
+            "totalSpending": total_spending,
+            "totalTransactions": sum(row[2] for row in rows)
+        }
+        print("Returning result:", result)
+        return result
+    except Exception as e:
+        print(f"Error occurred: {str(e)}")
+        import traceback
+        print(f"Traceback: {traceback.format_exc()}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error fetching category stats: {str(e)}"
+        )
+    finally:
+        if conn:
+            conn.close()
+            print("Database connection closed")
