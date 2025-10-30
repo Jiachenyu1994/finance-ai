@@ -11,10 +11,6 @@ os.environ.setdefault("SECRET_KEY", "test-secret-key")
 os.environ.setdefault("LOGIN_EXPIRE", "2")
 os.environ.setdefault("ENV", "test")
 
-# Mock LLM responses for testing
-def mock_llm_response(*args, **kwargs):
-    return "Mocked LLM response for testing"
-os.environ.setdefault("SQL_MODEL", "qwen/qwen-2.5-coder-32b-instruct:free")
 
 DB_URL = "file:pytest_db?mode=memory&cache=shared"
 
