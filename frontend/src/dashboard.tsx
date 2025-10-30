@@ -106,6 +106,7 @@ export default function Dashboard() {
             console.log("Response:", response.data);
             setTotalSpending(response.data.total_spending);
             setCategoryStats(response.data.categories);
+            console.log("total spending:", TotalSpending);
         } catch (error) {
             console.error("Error fetching category stats:", error);
             if (axios.isAxiosError(error)) {
