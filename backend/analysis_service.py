@@ -14,7 +14,6 @@ def analysis_answer_response(question: str, user_id: str) -> str:
 
 
 if __name__ == "__main__":
-  
     test_q = "how much did I spend last month?"
     print("🧠 Question:", test_q)
     print(analysis_answer_response(test_q, "tester"))
