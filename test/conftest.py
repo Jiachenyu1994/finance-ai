@@ -10,10 +10,7 @@ from fastapi.testclient import TestClient
 os.environ.setdefault("SECRET_KEY", "test-secret-key")
 os.environ.setdefault("LOGIN_EXPIRE", "2")
 os.environ.setdefault("ENV", "test")
-os.environ.setdefault("OPENROUTER_API_KEY","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")
-os.environ.setdefault("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
-os.environ.setdefault("OPEN_ROUTER_MODEL", "qwen/qwen3-235b-a22b:free")
-os.environ.setdefault("SQL_MODEL", "qwen/qwen-2.5-coder-32b-instruct:free")
+
 
 DB_URL = "file:pytest_db?mode=memory&cache=shared"
 
