@@ -11,13 +11,16 @@ os.environ.setdefault("SECRET_KEY", "test-secret-key")
 os.environ.setdefault("LOGIN_EXPIRE", "2")
 os.environ.setdefault("ENV", "test")
 
+# Mock LLM responses for testing
+def mock_llm_response(*args, **kwargs):
+    return "Mocked LLM response for testing"
+os.environ.setdefault("SQL_MODEL", "qwen/qwen-2.5-coder-32b-instruct:free")
 
 DB_URL = "file:pytest_db?mode=memory&cache=shared"
 
 # 添加后端路径到 Python 路径
 backend_path = Path(__file__).resolve().parent.parent / "backend"
 sys.path.insert(0, str(backend_path))
-
 # 导入后端模块
 import db as dbmod
 from app import app
