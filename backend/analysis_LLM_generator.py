@@ -19,6 +19,7 @@ analysis_LLM=ChatOpenAI(
     default_headers={
         "HTTP-Referer": "https://github.com/Jiachenyu1994/finance-ai",
         "X-Title": "Finance AI Assistant"
+        
     }
 )
 
