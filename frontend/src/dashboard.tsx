@@ -88,6 +88,7 @@ export default function Dashboard() {
     const [waiting_analysis, setWaitingAnalysis] = React.useState(false);
     const [categoryStats, setCategoryStats] = React.useState<Array<CategoryStats>>([]);
     const { showWarning, setShowWarning } = useAutoLogout();
+    const [TotalSpending, setTotalSpending] = React.useState(0);
 
     const fetchCategoryStats = async () => {
         const token = localStorage.getItem("authToken");
@@ -103,6 +104,7 @@ export default function Dashboard() {
                 }
             );
             console.log("Response:", response.data);
+            setTotalSpending(response.data.total_spending);
             setCategoryStats(response.data.categories);
         } catch (error) {
             console.error("Error fetching category stats:", error);
@@ -522,7 +524,7 @@ export default function Dashboard() {
                           Total spending
                         </Typography>
                         <Typography variant="h4" color="primary">
-                          ${((categoryStats[0]?.value || 0) / 100).toFixed(2)}
+                          ${(TotalSpending / 100).toFixed(2)}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
                           Total: {categoryStats.length} Categories, {categoryStats.reduce((acc, curr) => acc + curr.transactionCount, 0)} Transactions

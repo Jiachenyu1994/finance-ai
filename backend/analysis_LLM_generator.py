@@ -12,14 +12,14 @@ analysis_LLM=ChatOpenAI(
     model_name=os.getenv("OPEN_ROUTER_MODEL"),
     api_key=os.getenv("OPENROUTER_API_KEY"),
     base_url=os.getenv("OPENROUTER_BASE_URL"),
-    max_tokens=512,
+    max_tokens=1024,
     temperature=0.3,
-    max_retries=3,
+    max_retries=5,
     timeout=20,
     default_headers={
         "HTTP-Referer": "https://github.com/Jiachenyu1994/finance-ai",
         "X-Title": "Finance AI Assistant"
-        
+
     }
 )
 
