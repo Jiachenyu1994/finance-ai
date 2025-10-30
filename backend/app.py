@@ -179,18 +179,12 @@ class AnalyzeReq(BaseModel):
     question: str
 
 class AnalyzeResp(BaseModel):
-    sql: str
-    rows: list
     summary: str
 @app.post("/api/analyze/query",response_model=AnalyzeResp)
 def analyze_query(req: AnalyzeReq,user_id: str = Depends(get_current_user)):
     print("debug: analyze_query called")
     try:
-        sql = analysis_service.generate_sql(req.question)
-        rows = analysis_service.execute_sql(sql, user_id)
-        summary = analysis_service.summarize_rows(rows)
-        print("debug: analyze_query response:", {"sql": sql, "rows": rows, "summary": summary})
-        return AnalyzeResp(sql=sql, rows=rows, summary=summary)
+        return AnalyzeResp(summary=analysis_service.analysis_answer_response(question=req.question,user_id=user_id))
     except ValueError as ve:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ve))
     except Exception as e:

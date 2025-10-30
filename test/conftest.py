@@ -2,22 +2,28 @@
 import os
 import sys
 from pathlib import Path
-
+import sqlite3
+import pytest
+from fastapi.testclient import TestClient
 
 # 固定测试期的密钥/配置，保证 JWT 能解、登录不过期
 os.environ.setdefault("SECRET_KEY", "test-secret-key")
 os.environ.setdefault("LOGIN_EXPIRE", "2")
 os.environ.setdefault("ENV", "test")
+os.environ.setdefault("OPENROUTER_API_KEY","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")
+os.environ.setdefault("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
+os.environ.setdefault("OPEN_ROUTER_MODEL", "qwen/qwen3-235b-a22b:free")
+os.environ.setdefault("SQL_MODEL", "qwen/qwen-2.5-coder-32b-instruct:free")
+
 DB_URL = "file:pytest_db?mode=memory&cache=shared"
 
+# 添加后端路径到 Python 路径
 backend_path = Path(__file__).resolve().parent.parent / "backend"
 sys.path.insert(0, str(backend_path))
 
-from app import app  
-import db as dbmod 
-import sqlite3
-import pytest
-from fastapi.testclient import TestClient
+# 导入后端模块
+import db as dbmod
+from app import app
 
 
 @pytest.fixture(scope="function")
