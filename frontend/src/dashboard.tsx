@@ -104,7 +104,7 @@ export default function Dashboard() {
                 }
             );
             console.log("Response:", response.data);
-            setTotalSpending(response.data.total_spending);
+            setTotalSpending(response.data.totalSpending);
             setCategoryStats(response.data.categories);
             console.log("total spending:", TotalSpending);
         } catch (error) {
