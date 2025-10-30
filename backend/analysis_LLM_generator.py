@@ -77,24 +77,48 @@ _chain = analysis_prompt | analysis_LLM | StrOutputParser()
 # ----------- Public API Called by Backend -----------
 
 def answer_generator(rows, question: str) -> str:
+    # 输入验证
+    if not rows:
+        print("Debug: No data rows provided")
+        return "No data found for your query. Please make sure you have some transactions recorded."
+    
+    if not isinstance(rows, list):
+        print(f"Debug: Invalid data type for rows: {type(rows)}")
+        return "Error: Invalid data format"
+
     mode = classify_mode(question)
-
-    if isinstance(rows, list) and len(rows) > 200:
-        rows = rows[:200]
-
-    data_json = json.dumps({"rows": rows}, ensure_ascii=False)
-
-    text = _chain.invoke({
-        "mode": mode,
-        "question": question,
-        "data_json": data_json
-    })
-    text = text.strip()
-    text = re.sub(r"\s+", " ", text)
+    print(f"Debug: Question mode classified as: {mode}")
+    print(f"Debug: Number of rows received: {len(rows)}")
     
-    
+    # 限制数据量但保持最新数据
+    if len(rows) > 200:
+        print("Debug: Truncating rows to latest 200")
+        rows = rows[-200:]  # 保留最新的200条记录
 
-    return text if text else "No data found."
+    try:
+        data_json = json.dumps({"rows": rows}, ensure_ascii=False)
+        print(f"Debug: Data prepared for LLM: {data_json[:200]}...")  # 只打印前200个字符
+        
+        text = _chain.invoke({
+            "mode": mode,
+            "question": question,
+            "data_json": data_json
+        })
+        
+        text = text.strip()
+        text = re.sub(r"\s+", " ", text)
+        
+        print(f"Debug: LLM response: {text}")
+        
+        if not text or text.lower() == "no data found":
+            print("Debug: Empty or 'No data found' response from LLM")
+            return "No data found for your query. Please try rephrasing your question."
+            
+        return text
+        
+    except Exception as e:
+        print(f"Error in answer_generator: {str(e)}")
+        return f"Sorry, there was an error processing your query. Error: {str(e)}"
 
 # if __name__ == "__main__":
 #     from sql_excutor import execute_sql
