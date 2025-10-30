@@ -60,6 +60,7 @@ SYSTEM_PROMPT = (
     "6. Only say 'No data found' if the data_json is empty or contains no relevant data.\n"
     "7. Keep responses clear and professional.\n"
     "8. Never reveal SQL or technical details.\n"
+    "9. Need be careful of the money amount correctness.\n"
 )
 
 analysis_prompt = ChatPromptTemplate.from_messages([
