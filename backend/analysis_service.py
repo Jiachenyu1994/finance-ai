@@ -5,7 +5,10 @@ from analysis_LLM_generator import answer_generator
 def analysis_answer_response(question: str, user_id: str) -> str:
     sql = generate_sql(question=question, user_id_required=True)
     data = execute_sql(sql, user_id)
-    return answer_generator(data, question=question)
+    print("debug: analysis_answer_response data:", data)
+    summary = answer_generator(data, question)
+    print("debug: analysis_answer_response summary:", summary)
+    return summary
 
 
 
