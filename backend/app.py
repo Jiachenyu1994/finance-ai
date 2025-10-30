@@ -184,7 +184,8 @@ class AnalyzeResp(BaseModel):
 def analyze_query(req: AnalyzeReq,user_id: str = Depends(get_current_user)):
     print("debug: analyze_query called")
     try:
-        return AnalyzeResp(summary=analysis_service.analysis_answer_response(question=req.question,user_id=user_id))
+        summary=analysis_service.analysis_answer_response(question=req.question,user_id=user_id)
+        return AnalyzeResp(summary=summary)
     except ValueError as ve:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ve))
     except Exception as e:
