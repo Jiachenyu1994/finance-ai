@@ -9,17 +9,16 @@ from langchain.schema import StrOutputParser
 load_dotenv()
 
 analysis_LLM=ChatOpenAI(
-    model_name=os.getenv("OPEN_ROUTER_MODEL"),
+    model_name=os.getenv("SQL_MODEL"),  # 使用与 SQL 生成相同的模型
     api_key=os.getenv("OPENROUTER_API_KEY"),
     base_url=os.getenv("OPENROUTER_BASE_URL"),
     max_tokens=1024,
-    temperature=0.3,
-    max_retries=5,
-    timeout=20,
+    temperature=0,  # 降低温度以获得更确定的响应
+    max_retries=3,
+    timeout=30,  # 增加超时时间
     default_headers={
         "HTTP-Referer": "https://github.com/Jiachenyu1994/finance-ai",
         "X-Title": "Finance AI Assistant"
-
     }
 )
 
@@ -52,24 +51,31 @@ def classify_mode(question: str) -> str:
 # ----------- Prompt with Explicit Mode Instructions -----------
 
 SYSTEM_PROMPT = (
-    "You are a professional personal finance assistant.\n"
-    "You must rely ONLY on the provided transaction data.\n"
-    "Do NOT invent or assume missing data.\n"
-    "Convert `amount_cents` into US dollars: $xx.xx format.\n"
-    "If there is no relevant data, respond exactly: No data found.\n"
-    "Never reveal SQL, schema, or internal reasoning.\n"
+    "You are a professional personal finance assistant. Follow these rules strictly:\n"
+    "1. Use ONLY the provided transaction data in the data_json.\n"
+    "2. Convert amount_cents to dollars by dividing by 100.\n"
+    "3. Format amounts as $XX.XX\n"
+    "4. For spending questions, use positive language (spent rather than -$).\n"
+    "5. If data_json contains relevant data, you MUST provide an answer.\n"
+    "6. Only say 'No data found' if the data_json is empty or contains no relevant data.\n"
+    "7. Keep responses clear and professional.\n"
+    "8. Never reveal SQL or technical details.\n"
 )
 
 analysis_prompt = ChatPromptTemplate.from_messages([
     ("system", SYSTEM_PROMPT),
     ("user",
-     "Response mode: {mode}\n"
-     "- If mode = `minimal`: Provide ONE short direct answer sentence.\n"
-     "- If mode = `structured`: Provide up to 3 short lines: Summary, Breakdown, Suggestion.\n"
-     "Keep responses clear and professional.\n\n"
-     "User question: {question}\n\n"
-     "Transaction data (JSON):\n{data_json}")
-])
+     "Format your response based on the mode:\n"
+     "- For 'minimal' mode: Give ONE direct answer sentence.\n"
+     "- For 'structured' mode: Give three parts:\n"
+     "  1. Summary: One-line overview\n"
+     "  2. Breakdown: Key details\n"
+     "  3. Suggestion: One actionable tip\n\n"
+     "Question: {question}\n"
+     "Mode: {mode}\n"
+     "Data: {data_json}\n\n"
+     "Remember: If the data contains any relevant information, provide an answer. Only say 'No data found' if truly nothing matches the question."
+     )])
 
 _chain = analysis_prompt | analysis_LLM | StrOutputParser()
 
