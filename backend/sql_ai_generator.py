@@ -10,7 +10,7 @@ from lc_db_sqlite import TABLE_INFO
 load_dotenv()
 
 sql_LLM=ChatOpenAI(
-    model_name=os.getenv("OPEN_ROUTER_MODEL"),
+    model_name=os.getenv("SQL_MODEL"),
     api_key=os.getenv("OPENROUTER_API_KEY"),
     base_url=os.getenv("OPENROUTER_BASE_URL"),
     max_tokens=128,
@@ -62,6 +62,7 @@ def generate_sql(question: str, user_id_required: str) -> str:
     sql= re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL).strip()
 
     sql= " ".join(sql.split())
+    print("debug: generated SQL:", sql)
 
     lower_sql = sql.lower()
     if not lower_sql.startswith("select"):

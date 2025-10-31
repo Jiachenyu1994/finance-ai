@@ -9,7 +9,7 @@ from langchain.schema import StrOutputParser
 load_dotenv()
 
 analysis_LLM=ChatOpenAI(
-    model_name=os.getenv("OPEN_ROUTER_MODEL"),  # 使用与 SQL 生成相同的模型
+    model_name=os.getenv("SQL_MODEL"),  # 使用与 SQL 生成相同的模型
     api_key=os.getenv("OPENROUTER_API_KEY"),
     base_url=os.getenv("OPENROUTER_BASE_URL"),
     max_tokens=1024,
