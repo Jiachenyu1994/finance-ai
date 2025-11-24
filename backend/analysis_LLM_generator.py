@@ -102,6 +102,7 @@ def answer_generator(rows, question: str) -> str:
         print("Debug: Truncating rows to latest 200")
         rows = rows[-200:]  # 保留最新的200条记录
 
+
     try:
         data_json = json.dumps({"rows": rows}, ensure_ascii=False)
         print(f"Debug: Data prepared for LLM: {data_json[:200]}...")  # 只打印前200个字符
